@@ -29,6 +29,20 @@
 #define LED_1_PIN			6
 #define LED_2_PIN			7
 
+#define BUTTON_PIN_START	4
+#define NUM_BUTTONS			2
+
+uint8_t ButtonState[NUM_BUTTONS];
+
+boolean buttonPressed(int pin) {
+	if(digitalRead(pin) && (ButtonState[pin-BUTTON_PIN_START] == LOW)) {
+		ButtonState[pin-BUTTON_PIN_START] = HIGH;
+		return true;
+	} else if(!digitalRead(pin))
+		ButtonState[pin-BUTTON_PIN_START] = LOW;
+	return false;
+}
+
 void setup()
 {
 	Initialize();
@@ -42,10 +56,13 @@ void setup()
 	pinMode(LED_1_PIN, OUTPUT);
 	pinMode(LED_2_PIN, OUTPUT);
 
-	Set_T11(BUTTONS_PANEL_1_BUTTON_1_SLOT);
-	Set_T11(BUTTONS_PANEL_1_BUTTON_2_SLOT);
 	Set_T11(BUTTONS_PANEL_1_LED_1_SLOT);
 	Set_T11(BUTTONS_PANEL_1_LED_2_SLOT);
+
+	for(uint8_t i=0; i < NUM_BUTTONS; i++) {
+		ButtonState[i]  = LOW;
+	}
+
 }
 
 void loop()
@@ -56,15 +73,13 @@ void loop()
 
 		FAST_50ms() {	// Process  logic and relevant input and output every 50 milliseconds
 
-			if(DigIn(BUTTON_1_PIN, Souliss_T1n_ToggleCmd, BUTTONS_PANEL_1_BUTTON_1_SLOT))
+			if(buttonPressed(BUTTON_1_PIN))
 				Send(RS485_GATEWAY_ADDR, GATEWAY_BUTTONS_PANEL_1_BUTTON_1_SLOT, Souliss_T1n_ToggleCmd);
 
-			if(DigIn(BUTTON_2_PIN, Souliss_T1n_ToggleCmd, BUTTONS_PANEL_1_BUTTON_2_SLOT))
+			if(buttonPressed(BUTTON_1_PIN))
 				Send(RS485_GATEWAY_ADDR, GATEWAY_BUTTONS_PANEL_1_BUTTON_2_SLOT, Souliss_T1n_ToggleCmd);
 
 			// Execute the logic
-			Logic_T11(BUTTONS_PANEL_1_BUTTON_1_SLOT);
-			Logic_T11(BUTTONS_PANEL_1_BUTTON_2_SLOT);
 			Logic_T11(BUTTONS_PANEL_1_LED_1_SLOT);
 			Logic_T11(BUTTONS_PANEL_1_LED_2_SLOT);
 
@@ -82,5 +97,4 @@ void loop()
 	EXECUTESLOW() {
 		UPDATESLOW();
 	}
-
 }
