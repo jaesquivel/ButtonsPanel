@@ -72,7 +72,7 @@ void loop() {
 	EXECUTEFAST() {
 		UPDATEFAST();
 
-		FAST_50ms() {	// Process  logic and relevant input and output every 50 milliseconds
+		FAST_10ms() {	// Process  logic and relevant input and output every 50 milliseconds
 
 			button_addr.button = 1;
 			if(buttonPressed(BUTTON_1_PIN))
