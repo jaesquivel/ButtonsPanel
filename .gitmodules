@@ -1,4 +1,0 @@
-[submodule "lib/souliss"]
-	path = lib/souliss
-	url = https://github.com/souliss/souliss.git
-	branch = friariello
